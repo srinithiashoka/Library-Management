@@ -7,7 +7,8 @@ import { eq } from "drizzle-orm";
 import {users, books } from "./database/schema";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+
 app.use(cors({
   origin: "https://library-management-git-main-srinithi-as-projects.vercel.app",
   credentials: true
@@ -82,5 +83,5 @@ app.post("/users", async (req: Request, res: Response) => {
 });
 
 app.listen(port, () => {
-  console.log(`API running at http://localhost:${port}`);
+  console.log(`API running on port ${port}`);
 });
