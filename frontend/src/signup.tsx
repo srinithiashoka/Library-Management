@@ -15,11 +15,11 @@ const Signup = () => {
     e.preventDefault();
     setError("");
 
-    const API_URL = import.meta.env.VITE_API_URL;
     const { name, email } = formData;
+    const API_URL = import.meta.env.VITE_API_URL;
 
     try {
-      // ✅ Check if user already exists
+      // Check if user already exists
       const res = await fetch(`${API_URL}/users`);
       const users = await res.json();
       const existingUser = users.find((u: any) => u.email === email);
@@ -30,7 +30,7 @@ const Signup = () => {
         return;
       }
 
-      // ✅ Register user
+      // Create new user
       const response = await fetch(`${API_URL}/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -43,7 +43,7 @@ const Signup = () => {
         alert("Signup successful. Redirecting to login...");
         navigate("/login");
       } else {
-        setError(result.message || "Signup failed");
+        setError(result.message || "Signup failed. Try again.");
       }
     } catch (err: any) {
       console.error("Signup error:", err);

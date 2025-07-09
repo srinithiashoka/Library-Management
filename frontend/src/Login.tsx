@@ -15,20 +15,18 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
+    const API_URL = import.meta.env.VITE_API_URL;
     const email = formData.email.trim().toLowerCase();
+
     if (!email) {
       setError("Email is required.");
       return;
     }
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL;
       const res = await fetch(`${API_URL}/users`);
-      if (!res.ok) {
-        throw new Error("Failed to fetch users");
-      }
-
       const users = await res.json();
+
       const user = users.find((u: any) => u.email.toLowerCase() === email);
 
       if (user) {
@@ -39,7 +37,7 @@ const Login = () => {
         setTimeout(() => navigate("/signup"), 2000);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Login error:", err);
       setError("Login failed. Please try again.");
     }
   };
