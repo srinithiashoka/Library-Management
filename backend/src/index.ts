@@ -8,8 +8,11 @@ import {users, books } from "./database/schema";
 
 const app = express();
 const port = 3000;
+app.use(cors({
+  origin: "https://library-management-git-main-srinithi-as-projects.vercel.app",
+  credentials: true
+}));
 
-app.use(cors());
 app.use(express.json());
 
 type BookRequestBody = {

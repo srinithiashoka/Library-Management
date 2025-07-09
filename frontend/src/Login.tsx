@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Login.css"
+import "./Login.css";
+
 const Login = () => {
   const [formData, setFormData] = useState({ email: "" });
   const [error, setError] = useState("");
@@ -21,14 +22,18 @@ const Login = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/users");
-      const users = await res.json();
+      const API_URL = import.meta.env.VITE_API_URL;
+      const res = await fetch(`${API_URL}/users`);
+      if (!res.ok) {
+        throw new Error("Failed to fetch users");
+      }
 
+      const users = await res.json();
       const user = users.find((u: any) => u.email.toLowerCase() === email);
 
       if (user) {
         alert("Login successful!");
-        navigate("/add-book"); // Redirect to AddBookForm page
+        navigate("/add-book");
       } else {
         setError("User not found. Redirecting to signup...");
         setTimeout(() => navigate("/signup"), 2000);
@@ -50,7 +55,6 @@ const Login = () => {
           placeholder="Enter your email"
           value={formData.email}
           onChange={handleChange}
-          className=""
           required
         />
         <button type="submit">Login</button>

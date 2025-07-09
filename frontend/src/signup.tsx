@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Auth.css"; // ✅ import CSS
+import "./Auth.css";
 
 const Signup = () => {
   const [formData, setFormData] = useState({ name: "", email: "" });
@@ -15,10 +15,14 @@ const Signup = () => {
     e.preventDefault();
     setError("");
 
+    const API_URL = import.meta.env.VITE_API_URL;
+    const { name, email } = formData;
+
     try {
-      const res = await fetch("http://localhost:3000/users");
+      // ✅ Check if user already exists
+      const res = await fetch(`${API_URL}/users`);
       const users = await res.json();
-      const existingUser = users.find((u: any) => u.email === formData.email);
+      const existingUser = users.find((u: any) => u.email === email);
 
       if (existingUser) {
         setError("User already exists. Redirecting to login...");
@@ -26,20 +30,24 @@ const Signup = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:3000/users", {
+      // ✅ Register user
+      const response = await fetch(`${API_URL}/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ name, email }),
       });
+
+      const result = await response.json();
 
       if (response.ok) {
         alert("Signup successful. Redirecting to login...");
         navigate("/login");
       } else {
-        setError("Signup failed");
+        setError(result.message || "Signup failed");
       }
-    } catch (err) {
-      setError("Something went wrong");
+    } catch (err: any) {
+      console.error("Signup error:", err);
+      setError("Something went wrong. Try again later.");
     }
   };
 
